@@ -6,10 +6,19 @@
     <description>Recent content on Benjamin Gravesteijn</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 24 May 2019 21:48:51 -1051</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Fri, 24 May 2019 21:48:51 -1051</pubDate>
+      
+      <guid>/about/</guid>
+      <description>This is the website of Benjamin Gravesteijn. He is a PhD student at the department of Public Health, at the Erasmus MC. He works in the section for Medical decision making. His PhD on data-driven improvement of decision making in acute care.</description>
+    </item>
     
     <item>
       <title>Evolution or revolution</title>
