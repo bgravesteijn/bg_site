@@ -28,6 +28,10 @@ One of the ways a more dynamic career flow would improve academia is through edu
 ## Financial incentives
 Since the meeting was organized by funders, the means to improve academia that was discussed most often was funding. There were discussions on how through improved funding systems, both diversity, team science, and education could be recognized and appreciated. 
 
+```{r, echo=FALSE}
+blogdown::shortcode('tweet', '1131482016715890688')
+```
+
 Currently, "excellency" is one of the requirements for a grant proposal to be accepted. However, Anne de Vries, the chairwoman of the national [PhD-network](https://www.hetpnn.nl/2011/04/12/bestuur-3/), could not think of another competence as irrelevant as the competence "excellence": "One can excell at educating, formulating research questions, bringing people together et cetera. But nobody knows how to define general excellency". To measure excellency was one of the most debated issues of the day, and at the end no real criteria could be formulated. One of the most interesting ideas I've heard was to add space in grant proposals where researchers could limitlessly express why they are excellent. This could disencourage strategic behaviour, and potentially foster diversity.
 
 There was general consensus on the fact that the current funding system does not sufficiently recognize team science. After all: "even Einstein did not walk alone". This led to the idea that the system of "principal investigators" generally does not reflect the team that leads big projects. It should be said that the term still applies for specific, mostly local, projects where one researcher actually is the one responsible for the project. However, big projects where multiple centers or countries are collaborating are in practice led by a team, while often the principal investigator receives the actual credits. It is not remarkible that this should change.
