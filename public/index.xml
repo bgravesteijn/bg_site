@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>A Hugo website</title>
+    <title>Benjamin Gravesteijn</title>
     <link>/</link>
-    <description>Recent content on A Hugo website</description>
+    <description>Recent content on Benjamin Gravesteijn</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Dec 2016 21:49:57 -0700</lastBuildDate>
+    <lastBuildDate>Fri, 24 May 2019 21:48:51 -1051</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Fri, 24 May 2019 21:48:51 -1051</pubDate>
+      
+      <guid>/about/</guid>
+      <description>This is the website of Benjamin Gravesteijn. He is a PhD student at the department of Public Health, at the Erasmus MC. He works in the section for Medical decision making. His PhD on data-driven improvement of decision making in acute care.</description>
+    </item>
+    
+    <item>
+      <title>Evolution or Revolution</title>
+      <link>/2019/05/24/evolution-or-revolution/</link>
+      <pubDate>Fri, 24 May 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/2019/05/24/evolution-or-revolution/</guid>
+      <description>Yesterday, Daphne Voormolen and I attended a meeting orginized by the main Dutch funding organizations ZonMW and the NWO, called “Evolution or Revolution”. The aim of the meeting was to have an open discussion. One where we, as researchers, were asked what they, as funders, could do to help create financial incentives to improve the scientific community. Through panel discussions, break-out sessions, and interactive menti-questions, we discussed how the scientific community in 2030 will have to function.</description>
+    </item>
     
     <item>
       <title>A Plain Markdown Post</title>
@@ -19,15 +37,6 @@
       <guid>/2016/12/30/a-plain-markdown-post/</guid>
       <description>This is a post written in plain Markdown (*.md) instead of R Markdown (*.Rmd). The major differences are:
  You cannot run any R code in a plain Markdown document, whereas in an R Markdown document, you can embed R code chunks (```{r}); A plain Markdown post is rendered through Blackfriday, and an R Markdown document is compiled by rmarkdown and Pandoc.  There are many differences in syntax between Blackfriday&amp;rsquo;s Markdown and Pandoc&amp;rsquo;s Markdown.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>/about/</link>
-      <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
-      
-      <guid>/about/</guid>
-      <description>This is a &amp;ldquo;hello world&amp;rdquo; example website for the blogdown package. The theme was forked from @jrutheiser/hugo-lithium-theme and modified by Yihui Xie.</description>
     </item>
     
     <item>

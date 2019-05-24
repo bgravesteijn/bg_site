@@ -1,6 +1,6 @@
 ---
 title: "About"
-date: "2016-05-05T21:48:51-07:00"
+date: "2019-05-24T21:48:51-10:51"
 ---
 
-This is a "hello world" example website for the [**blogdown**](https://github.com/rstudio/blogdown) package. The theme was forked from [@jrutheiser/hugo-lithium-theme](https://github.com/jrutheiser/hugo-lithium-theme) and modified by [Yihui Xie](https://github.com/yihui/hugo-lithium).
+This is the website of Benjamin Gravesteijn. He is a PhD student at the [department of Public Health](https://www6.erasmusmc.nl/public-health/), at the [Erasmus MC](https://www6.erasmusmc.nl/). He works in the [section for Medical decision making](https://www6.erasmusmc.nl/public-health/research-education/decision-making/). His PhD on data-driven improvement of decision making in acute care.
