@@ -1,5 +1,5 @@
 ---
-title: Track record
+title: Acknowledging and recognizing scientists
 author: Benjamin Gravesteijn
 date: '2019-05-24'
 slug: track-record
