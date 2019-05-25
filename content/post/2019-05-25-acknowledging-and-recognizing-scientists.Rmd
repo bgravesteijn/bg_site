@@ -2,7 +2,7 @@
 title: Acknowledging and recognizing scientists
 author: Benjamin Gravesteijn
 date: '2019-05-25'
-slug: track-record
+slug: acknowledging-and-recognizing-scientists
 categories: ["R"]
 tags: ["R Markdown", "plot", "regression"]
 ---
@@ -47,20 +47,22 @@ ggplot(plot.df, aes(x=year, y=n, fill=cites))+
 Additionaly, not only the figures per paper count, also your author position counts. This is, however, not the case in every field. In economics, for example, they list their author positions alphabetically. In that field, you have to actually read who did what, to understand their contribution. In the medical field, everything is about being first, last, or possibly second author. Like this:
 
 ```{r}
-pubs$position <- factor(0)
-levels(pubs$position) <- c(1:1000, "last")
-for(i in 1:nrow(pubs)){
-  if(pubs$title[i]=="The 3rd Joint Symposium of the International and National Neurotrauma Societies and AANS/CNS Section on Neurotrauma and Critical Care August 11–16, 2018 Toronto, Canada"){
-    pubs$position[i] <- 1
-  }else{
-  x <- strsplit(as.character(pubs$author[i]), ",")[[1]]
-  p <- which(x%in%c("BY Gravesteijn", " BY Gravesteijn"))
-  pubs$position[i] <- p
-  if(p==length(x)) pubs$position[i] <- "last"
-  }
-}
-
-pie(table(pubs$position, exclude = names(which(table(pubs$position)==0))), 
+# position <- rep(factor(0), nrow(pubs))
+# levels(position) <- c(1:1000, "last")
+# for(i in 1:nrow(pubs)){
+#   if(pubs$title[i]=="The 3rd Joint Symposium of the International and National Neurotrauma Societies and AANS/CNS Section on Neurotrauma and Critical Care August 11–16, 2018 Toronto, Canada"){
+#     position[i] <- 1
+#   }else{
+#   x <- strsplit(as.character(pubs$author[i]), ",")[[1]]
+#   p <- which(x%in%c("BY Gravesteijn", " BY Gravesteijn"))
+#   position[i] <- p
+#   if(p==length(x)) position[i] <- "last"
+#   }
+# }
+# save(position, file="Images/position_fig_data.Rdata")
+# 
+load("Images/position_fig_data.Rdata")
+pie(table(position, exclude = names(which(table(position)==0))), 
     main="Position", cex=2, cex.main=2)
 ```
 
