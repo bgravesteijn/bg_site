@@ -1,7 +1,7 @@
 ---
 title: Acknowledging and recognizing scientists
 author: Benjamin Gravesteijn
-date: '2019-05-24'
+date: '2019-05-25'
 slug: track-record
 categories: ["R"]
 tags: ["R Markdown", "plot", "regression"]
@@ -69,7 +69,7 @@ In reality, these figures do not represent what I have done over the last couple
 
 Additionally, they do not capture at all the accomplishments in the educational aspect of my work. After all, it should be an essential aspect of the job. Most notably, I am developing a programme where PhD students help medicin master students who are doing their scientific internshipt. It is a subsidiarized consultancy programme. But I have also been involved in the development of a massive online open course ([MOOC](https://en.wikipedia.org/wiki/Massive_open_online_course)) for the Leiden Public Health Management Master. Furthermore, I have been assisting in courses from the [NIHES](http://www.nihes.com/) and [MolMed](https://www.molmed.nl/) schools at the Erasmus MC: both helping develop and assisting in the practicals. 
 
-All these activities, however, should also be taken into account when applying for funding. However, and this is the trickier part: how can this be quantified? When measuring scientific output, you have a quick and dirty way to quantify both quantity (number of publications) and "quality" (number of citations, this is very debated...). However, this is much harder to do for education. Of course you can quantify the hours, but how will you easily quantify the quality? And all the extra work that goes into the preparation, does that count? 
+All these activities, however, should also be taken into account when applying for funding. However, and this is the trickier part, how can this be quantified? When measuring scientific output, you have a quick and dirty way to quantify both quantity (number of publications) and "quality" (number of citations, this is very debated...). This is much harder to do for education. Of course you can quantify the hours, but how will you easily quantify the quality? And all the extra work that goes into the preparation, does that count? 
 
 ## Conclusion
 As you can see, measuring the performance of a researcher is less straight-forward if the researcher focuses on education. On the one hand, the lack of extensive measures for quantifying quality in education could be the reason why education is generally undervalued. On the other,  this could be the result of the fact that education is undervalued. However, awareness is rising into this issue: people understand that a heuristic view on acknowledging scientists could enhance teamwork and relieve the experienced pressure, improving the health and usefulness of scientists. The discussion has again been sparked after yesterday's meeting. Now it's time to see some improvements. 
