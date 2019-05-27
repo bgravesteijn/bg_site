@@ -3,8 +3,8 @@ title: Evolution or revolution
 author: Benjamin Gravesteijn
 date: '2019-05-24'
 slug: evolution-or-revolution
-categories: ["R"]
-tags: ["R Markdown", "plot", "regression"]
+categories: ["Conference"]
+tags: ["Publications", "Education", "Rewarding"]
 ---
 
 ```{r setup, include=FALSE}
