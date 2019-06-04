@@ -4,7 +4,7 @@ author: Benjamin Gravesteijn
 date: '2019-06-04'
 slug: euroanesthesia-2019
 categories: ["Conference"]
-tags: []
+tags: ["Anesthesia", "Vienna"]
 ---
 
 Mentally, I started preparing for this business trip in Tokyo, Japan. After making my way over to the [national art center](www.nact.jp), I was notified that one of the new exhibitions was "Vienna on her way to Modernism". Through paintings, decorations, and fasion of the fin-de-siècle Viennese art scene, the transformation of Vienna on its way to the 20th century was meticulously displayed. From "just" a European city, to the capitol of the continent, through the development of intensive instrastructure, avant-garde architecture, and of course, the flourishing culture, centered around the Viennese bourgoisie. 
