@@ -30,8 +30,8 @@ colnames(dti) <- c("Pupils", "mGCS", "Age", "ISS", "GOSE","Site")
 
 ```
 
-## Step 1 - Exploration
-###For the quantity and patterns of missingness
+# Step 1 - Exploration
+##For the quantity and patterns of missingness
 ```{r}
 VIM::aggr(dti)
 ```
@@ -47,18 +47,17 @@ corrplot::corrplot(corr, type = "lower")
 # install_github("bgravesteijn/bgravesteijn")
 bgravesteijn::distr.na(dti)
 ```
-### To test MAR
+## To test MAR
 ```{r}
 summary(glm(I(is.na(Pupils))~mGCS+Age+ISS+GOSE, data=dti, family="binomial"))
 summary(glm(I(is.na(mGCS))~Pupils+Age+ISS+GOSE, data=dti, family="binomial"))
 summary(glm(I(is.na(ISS))~mGCS+Age+Pupils+GOSE, data=dti, family="binomial"))
 summary(glm(I(is.na(GOSE))~mGCS+Age+ISS+Pupils, data=dti, family="binomial"))
 ```
-> You want to focus on 1) indications for a valid MAR assumption and 2) enough statistical information in observed variables in terms of quantity and correlation. For both requirements, adding more variables could often be the solution. These auxiliary variables will not be used in the final analysis, but areessential for valid and efficient imputation.   
 
-## Step 3 - Imputation
+# Step 3 - Imputation
 
-### Multiple - single level
+## Multiple - single level
 ```{r Multiple - single level, eval=FALSE}
 library(mice)
 
@@ -76,7 +75,7 @@ pred[, "Site"] <- 0 #don't use sitecode to impute
 miceimp <- mice(data = miceimp, method = meth, predictorMatrix = pred, m=5, printFlag = FALSE, set.seed=1234)
 ```
 
-### Multiple - multilevel
+## Multiple - multilevel
 ```{r Multiple - multilevel, eval=FALSE}
 library(jomo)
 
@@ -104,7 +103,7 @@ jomoimp.2 <- datalist2mids(split(jomoimp,
                                  jomoimp$Imputation)[-1])
 ```
 
-## Step 4 - Diagnostics
+# Step 4 - Diagnostics
 ```{r include=FALSE}
 load("Images/imputed_data.RData")
 
@@ -137,7 +136,7 @@ bgravesteijn::distr.na(complete(jomoimp.2,1))
 densityplot(jomoimp.2)
 ```
 
-## Step 5 - Fitting
+# Step 5 - Fitting
 ```{r}
 library(rms)
 fit2 <- fit.mult.impute(GOSE~mGCS+Age+Pupils, fitter=lrm, xtrans = miceimp, data=dti)

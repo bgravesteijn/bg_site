@@ -76,10 +76,10 @@
 
 
 <p><em>This is the tutorial for the paper “Missing data in TBI research: A five step approach for multiple imputation”.</em></p>
-<div id="step-1---exploration" class="section level2">
-<h2>Step 1 - Exploration</h2>
-<div id="for-the-quantity-and-patterns-of-missingness" class="section level3">
-<h3>For the quantity and patterns of missingness</h3>
+<div id="step-1---exploration" class="section level1">
+<h1>Step 1 - Exploration</h1>
+<div id="for-the-quantity-and-patterns-of-missingness" class="section level2">
+<h2>For the quantity and patterns of missingness</h2>
 <pre class="r"><code>VIM::aggr(dti)</code></pre>
 <p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-1-1.png" width="672" /> ### For the correlation between variables</p>
 <pre class="r"><code>corr &lt;- cor(sapply(dti, as.numeric), use = &quot;pairwise.complete.obs&quot;, method = &quot;spearman&quot;)
@@ -89,7 +89,7 @@ corrplot::corrplot(corr, type = &quot;lower&quot;)</code></pre>
 # library(devtools)
 # install_github(&quot;bgravesteijn/bgravesteijn&quot;)
 bgravesteijn::distr.na(dti)</code></pre>
-<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-3-1.png" width="672" /> ### To test MAR</p>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-3-1.png" width="672" /> ## To test MAR</p>
 <pre class="r"><code>summary(glm(I(is.na(Pupils))~mGCS+Age+ISS+GOSE, data=dti, family=&quot;binomial&quot;))</code></pre>
 <pre><code>## 
 ## Call:
@@ -205,15 +205,12 @@ bgravesteijn::distr.na(dti)</code></pre>
 ## AIC: 3555.4
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<blockquote>
-<p>You want to focus on 1) indications for a valid MAR assumption and 2) enough statistical information in observed variables in terms of quantity and correlation. For both requirements, adding more variables could often be the solution. These auxiliary variables will not be used in the final analysis, but areessential for valid and efficient imputation.</p>
-</blockquote>
 </div>
 </div>
-<div id="step-3---imputation" class="section level2">
-<h2>Step 3 - Imputation</h2>
-<div id="multiple---single-level" class="section level3">
-<h3>Multiple - single level</h3>
+<div id="step-3---imputation" class="section level1">
+<h1>Step 3 - Imputation</h1>
+<div id="multiple---single-level" class="section level2">
+<h2>Multiple - single level</h2>
 <pre class="r"><code>library(mice)
 
 miceimp &lt;- dti
@@ -229,8 +226,8 @@ pred[, &quot;Site&quot;] &lt;- 0 #don&#39;t use sitecode to impute
 
 miceimp &lt;- mice(data = miceimp, method = meth, predictorMatrix = pred, m=5, printFlag = FALSE, set.seed=1234)</code></pre>
 </div>
-<div id="multiple---multilevel" class="section level3">
-<h3>Multiple - multilevel</h3>
+<div id="multiple---multilevel" class="section level2">
+<h2>Multiple - multilevel</h2>
 <pre class="r"><code>library(jomo)
 
 jomoimp &lt;- dti
@@ -257,8 +254,8 @@ jomoimp.2 &lt;- datalist2mids(split(jomoimp,
                                  jomoimp$Imputation)[-1])</code></pre>
 </div>
 </div>
-<div id="step-4---diagnostics" class="section level2">
-<h2>Step 4 - Diagnostics</h2>
+<div id="step-4---diagnostics" class="section level1">
+<h1>Step 4 - Diagnostics</h1>
 <pre class="r"><code>print(&quot;MICE&quot;)</code></pre>
 <pre><code>## [1] &quot;MICE&quot;</code></pre>
 <pre class="r"><code>plot(miceimp)</code></pre>
@@ -288,8 +285,8 @@ print(&quot;JOMO&quot;)</code></pre>
 densityplot(jomoimp.2)</code></pre>
 <p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-11.png" width="672" /></p>
 </div>
-<div id="step-5---fitting" class="section level2">
-<h2>Step 5 - Fitting</h2>
+<div id="step-5---fitting" class="section level1">
+<h1>Step 5 - Fitting</h1>
 <pre class="r"><code>library(rms)
 fit2 &lt;- fit.mult.impute(GOSE~mGCS+Age+Pupils, fitter=lrm, xtrans = miceimp, data=dti)</code></pre>
 <pre><code>## 
