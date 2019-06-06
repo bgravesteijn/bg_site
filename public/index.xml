@@ -6,10 +6,22 @@
     <description>Recent content on Benjamin Gravesteijn</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 04 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 06 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Multiple imputation</title>
+      <link>/2019/06/06/multiple-imputation/</link>
+      <pubDate>Thu, 06 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/06/06/multiple-imputation/</guid>
+      <description>Step 1 - ExplorationFor the quantity and patterns of missingnessVIM::aggr(dti)### For the correlation between variables
+corr &amp;lt;- cor(sapply(dti, as.numeric), use = &amp;quot;pairwise.complete.obs&amp;quot;, method = &amp;quot;spearman&amp;quot;)corrplot::corrplot(corr, type = &amp;quot;lower&amp;quot;)### For overall distributions and % missingess
+# The first time:# library(devtools)# install_github(&amp;quot;bgravesteijn/bgravesteijn&amp;quot;)bgravesteijn::distr.na(dti)### To test MAR
+summary(glm(I(is.na(Pupils))~mGCS+Age+ISS+GOSE, data=dti, family=&amp;quot;binomial&amp;quot;))## ## Call:## glm(formula = I(is.na(Pupils)) ~ mGCS + Age + ISS + GOSE, family = &amp;quot;binomial&amp;quot;, ## data = dti)## ## Deviance Residuals: ## Min 1Q Median 3Q Max ## -0.</description>
+    </item>
     
     <item>
       <title>Anaesthesia meets Vienna</title>

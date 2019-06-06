@@ -1,0 +1,160 @@
+---
+title: Multiple imputation
+author: Benjamin Gravesteijn
+date: '2019-06-06'
+slug: multiple-imputation
+categories:
+  - Tutorial
+tags:
+  - Statistics
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+library(ordinal)
+library(nnet)
+library(data.table)
+library(devtools)
+library(mice)
+library(rms)
+
+#install_github("bgravesteijn/bgravesteijn") #only the first time
+
+load("Images/preppeddata.RData")
+
+dti <- dt[,.(InjuryHx.PupilResponseIMPACT, InjuryHx.HighestPreHospEDMotorGCS,Subject.Age, InjuryHx.TotalISS, gose, Subject.SiteCode)]
+
+colnames(dti) <- c("Pupils", "mGCS", "Age", "ISS", "GOSE","Site")
+
+```
+
+## Step 1 - Exploration
+###For the quantity and patterns of missingness
+```{r}
+VIM::aggr(dti)
+```
+### For the correlation between variables
+```{r}
+corr <- cor(sapply(dti, as.numeric), use = "pairwise.complete.obs", method = "spearman")
+corrplot::corrplot(corr, type = "lower")
+```
+### For overall distributions and % missingess
+```{r}
+# The first time:
+# library(devtools)
+# install_github("bgravesteijn/bgravesteijn")
+bgravesteijn::distr.na(dti)
+```
+### To test MAR
+```{r}
+summary(glm(I(is.na(Pupils))~mGCS+Age+ISS+GOSE, data=dti, family="binomial"))
+summary(glm(I(is.na(mGCS))~Pupils+Age+ISS+GOSE, data=dti, family="binomial"))
+summary(glm(I(is.na(ISS))~mGCS+Age+Pupils+GOSE, data=dti, family="binomial"))
+summary(glm(I(is.na(GOSE))~mGCS+Age+ISS+Pupils, data=dti, family="binomial"))
+```
+> You want to focus on 1) indications for a valid MAR assumption and 2) enough statistical information in observed variables in terms of quantity and correlation. For both requirements, adding more variables could often be the solution. These auxiliary variables will not be used in the final analysis, but areessential for valid and efficient imputation.   
+
+## Step 3 - Imputation
+
+### Multiple - single level
+Multiple imputation uses regression techniques, to estimate a distribution of plausible values for each missing observation and samples from that distribution multiple times (often five). The result of this technique are multiple datasets, which have to be analysed separately and finally pooled. This technique, proposed by Roderick Little and Donald Rubin has enjoyed high popularity under statisticians. One of the main advantages over single imputation is that the uncertainty in the imputation estimates are taken into account in the final analysis, because of Rubin's Rules. These rules are used to pool the multiple fitted models, and add the variation of the estimates of the coefficients to the standard error, making the estimates more uncertain. Therefore multiple imputation is a more honest imputation method than single imputation. 
+
+
+```{r Multiple - single level, eval=FALSE}
+library(mice)
+
+miceimp <- dti
+
+miceimp0 <- mice(miceimp, maxit=0)
+
+meth <- miceimp0$method
+pred <- miceimp0$predictorMatrix
+
+meth[which(meth=="pmm")] <- "midastouch" #the improved version of PMM, of the miceadds package
+
+pred[, "Site"] <- 0 #don't use sitecode to impute
+
+miceimp <- mice(data = miceimp, method = meth, predictorMatrix = pred, m=5, printFlag = FALSE, set.seed=1234)
+```
+
+### Multiple - multilevel
+Imputation of missing observations using the above mentioned methods have one common disadvantage: they do not take into account the hierarchical structure of data. Nowadays, trials and cohort studies are more and more a collaborative effort between multiple centers. However, data collection, attrition and quality might be different in multicenter studies. Therefore, imputation taking into account the multilevel structure of these datasets might improve validity of the imputation estimates. Using a joint modelling approach with the "jomo" package in R, it is possible to obtain estimates correcting for a random intercept for site. One of the main concerns is how much benefit is obtained from these estimates, in contrast to how advanced this technique is. 
+
+
+```{r Multiple - multilevel, eval=FALSE}
+library(jomo)
+
+jomoimp <- dti
+
+jomoimp$GOSE <- factor(jomoimp$GOSE, ordered=TRUE)
+
+# specify the level of each variable
+lvl <- c(GOSE=1, 
+         Pupils = 1, 
+         mGCS = 1, 
+         Age = 1, 
+         ISS = 1, 
+         Site = 2)
+
+jomoimp <- data.frame(jomoimp) #so the subsetting within the function works
+
+fml <- as.formula("GOSE~Pupils+mGCS+Age+ISS+(1|Site)")
+
+jomo.chain <- jomo.clmm.MCMCchain(fml,data = jomoimp[,names(lvl)], level=lvl)
+
+jomoimp <- jomo.clmm(fml,data = jomoimp[,names(lvl)], level=lvl, nimp = 5)
+
+jomoimp.2 <- datalist2mids(split(jomoimp,
+                                 jomoimp$Imputation)[-1])
+```
+
+## Step 4 - Diagnostics
+After imputation, a checkpoint at which it is assessed whether imputation was successful or not should be implemented. For all imputation methods, it is advised to compare the post-imputation distributions with the pre-imputed dataset. If distributions do not match, it should be considered what constitutes this difference. For example, MAR could occur in the number of alcohol consumptions in pregnant women, since they more often would refuse to respond to that question. If gender and pregnancy would be in the imputation model, higher number of alcohol consumptions in the imputed versus the non-imputed dataset would be the valid result.
+
+Furthermore, in multiple imputation convergence of the algorithm should be checked, since this method is an iterative process. This implies that through repeated imputation rounds, a stable pattern should be reached. If this is not the case, there could be an error in the imputation model specification. When interpreting convergence plots, the scale of the y-axis should be taken into account to conclude whether changes are significant. Furthermore, make sure that no trends are present in the plots, which often imply a wrongly specified imputation model.  
+```{r include=FALSE}
+load("Images/imputed_data.RData")
+
+meanimp <- imp[[1]]
+singimp <- imp[[2]]
+miceimp <- imp[[3]]
+jomo.chain <- imp[[4]]
+jomoimp.2 <- imp[[6]]
+```
+
+
+```{r echo=TRUE}
+print("MICE")
+plot(miceimp)
+bgravesteijn::distr.na(complete(miceimp,1))
+densityplot(miceimp)
+
+print("JOMO")
+par(mfcol = c(2, 3), mar = c(3, 2.5, 0.5, 0.5), mgp = c(2, 0.6, 0))
+apply(jomo.chain$collectbeta[1, ,], 1, plot, type = "l",
+      xlab = 'iteration', ylab = '')
+for (k in 1:dim(jomo.chain$collectomega)[1]) {
+  apply(jomo.chain$collectomega[k, , ], 1, plot, type = "l",
+        xlab = 'iteration', ylab = '')
+}
+apply(jomo.chain$collectbetaY[1, ,], 1, plot, type = "l",
+      xlab = 'iteration', ylab = '')
+plot(jomo.chain$collectvarY, type = 'l')
+bgravesteijn::distr.na(complete(jomoimp.2,1))
+densityplot(jomoimp.2)
+```
+
+## Step 5 - Fitting
+Finally, you can fit your model of interest on the data. For single imputation this should not be a problem. For multiple imputation, however, all datasets should be used for fitting. Afterwards, the results should be pooled. This can easily performed using the rms package. The function "fit.mult.impute" performs the fitting and pooling step for you. See for an overview of the steps the image below.
+![](mice.plot.png)
+
+```{r}
+library(rms)
+#Multiple imputation
+fit2 <- fit.mult.impute(GOSE~mGCS+Age+Pupils, fitter=lrm, xtrans = miceimp, data=dti)
+fit2
+
+```
+
