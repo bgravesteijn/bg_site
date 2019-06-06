@@ -81,15 +81,24 @@
 <div id="for-the-quantity-and-patterns-of-missingness" class="section level2">
 <h2>For the quantity and patterns of missingness</h2>
 <pre class="r"><code>VIM::aggr(dti)</code></pre>
-<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-1-1.png" width="672" /> ### For the correlation between variables</p>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<div id="for-the-correlation-between-variables" class="section level3">
+<h3>For the correlation between variables</h3>
 <pre class="r"><code>corr &lt;- cor(sapply(dti, as.numeric), use = &quot;pairwise.complete.obs&quot;, method = &quot;spearman&quot;)
 corrplot::corrplot(corr, type = &quot;lower&quot;)</code></pre>
-<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-2-1.png" width="672" /> ### For overall distributions and % missingess</p>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="for-overall-distributions-and-missingess" class="section level3">
+<h3>For overall distributions and % missingess</h3>
 <pre class="r"><code># The first time:
 # library(devtools)
 # install_github(&quot;bgravesteijn/bgravesteijn&quot;)
 bgravesteijn::distr.na(dti)</code></pre>
-<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-3-1.png" width="672" /> ## To test MAR</p>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+</div>
+<div id="to-test-mar" class="section level2">
+<h2>To test MAR</h2>
 <pre class="r"><code>summary(glm(I(is.na(Pupils))~mGCS+Age+ISS+GOSE, data=dti, family=&quot;binomial&quot;))</code></pre>
 <pre><code>## 
 ## Call:

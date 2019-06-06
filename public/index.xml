@@ -18,9 +18,7 @@
       
       <guid>/2019/06/06/multiple-imputation/</guid>
       <description>This is the tutorial for the paper “Missing data in TBI research: A five step approach for multiple imputation”.
-Step 1 - ExplorationFor the quantity and patterns of missingnessVIM::aggr(dti)### For the correlation between variables
-corr &amp;lt;- cor(sapply(dti, as.numeric), use = &amp;quot;pairwise.complete.obs&amp;quot;, method = &amp;quot;spearman&amp;quot;)corrplot::corrplot(corr, type = &amp;quot;lower&amp;quot;)### For overall distributions and % missingess
-# The first time:# library(devtools)# install_github(&amp;quot;bgravesteijn/bgravesteijn&amp;quot;)bgravesteijn::distr.na(dti)## To test MAR</description>
+Step 1 - ExplorationFor the quantity and patterns of missingnessVIM::aggr(dti)For the correlation between variablescorr &amp;lt;- cor(sapply(dti, as.numeric), use = &amp;quot;pairwise.complete.obs&amp;quot;, method = &amp;quot;spearman&amp;quot;)corrplot::corrplot(corr, type = &amp;quot;lower&amp;quot;)For overall distributions and % missingess# The first time:# library(devtools)# install_github(&amp;quot;bgravesteijn/bgravesteijn&amp;quot;)bgravesteijn::distr.na(dti)To test MARsummary(glm(I(is.</description>
     </item>
     
     <item>
