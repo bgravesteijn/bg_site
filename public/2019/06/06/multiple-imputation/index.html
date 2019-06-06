@@ -291,7 +291,6 @@ densityplot(jomoimp.2)</code></pre>
 <div id="step-5---fitting" class="section level2">
 <h2>Step 5 - Fitting</h2>
 <pre class="r"><code>library(rms)
-#Multiple imputation
 fit2 &lt;- fit.mult.impute(GOSE~mGCS+Age+Pupils, fitter=lrm, xtrans = miceimp, data=dti)</code></pre>
 <pre><code>## 
 ## Variance Inflation Factors Due to Imputation:
