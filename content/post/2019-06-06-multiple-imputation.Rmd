@@ -148,7 +148,7 @@ densityplot(jomoimp.2)
 
 ## Step 5 - Fitting
 Finally, you can fit your model of interest on the data. For single imputation this should not be a problem. For multiple imputation, however, all datasets should be used for fitting. Afterwards, the results should be pooled. This can easily performed using the rms package. The function "fit.mult.impute" performs the fitting and pooling step for you. See for an overview of the steps the image below.
-![](mice.plot.png)
+![](Images/mice.plot.png)
 
 ```{r}
 library(rms)

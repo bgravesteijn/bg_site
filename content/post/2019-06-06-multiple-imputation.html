@@ -229,7 +229,7 @@ densityplot(jomoimp.2)</code></pre>
 </div>
 <div id="step-5---fitting" class="section level2">
 <h2>Step 5 - Fitting</h2>
-<p>Finally, you can fit your model of interest on the data. For single imputation this should not be a problem. For multiple imputation, however, all datasets should be used for fitting. Afterwards, the results should be pooled. This can easily performed using the rms package. The function “fit.mult.impute” performs the fitting and pooling step for you. See for an overview of the steps the image below. <img src="mice.plot.png" /></p>
+<p>Finally, you can fit your model of interest on the data. For single imputation this should not be a problem. For multiple imputation, however, all datasets should be used for fitting. Afterwards, the results should be pooled. This can easily performed using the rms package. The function “fit.mult.impute” performs the fitting and pooling step for you. See for an overview of the steps the image below. <img src="Images/mice.plot.png" /></p>
 <pre class="r"><code>library(rms)
 #Multiple imputation
 fit2 &lt;- fit.mult.impute(GOSE~mGCS+Age+Pupils, fitter=lrm, xtrans = miceimp, data=dti)</code></pre>
