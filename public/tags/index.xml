@@ -6,7 +6,7 @@
     <description>Recent content in Tags on Benjamin Gravesteijn</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 12 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,9 +14,27 @@
     <item>
       <title>Anesthesia</title>
       <link>/tags/anesthesia/</link>
-      <pubDate>Wed, 21 Aug 2019 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/anesthesia/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Leuven</title>
+      <link>/tags/leuven/</link>
+      <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/leuven/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Publications</title>
+      <link>/tags/publications/</link>
+      <pubDate>Thu, 12 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/publications/</guid>
       <description></description>
     </item>
     
@@ -35,15 +53,6 @@
       <pubDate>Tue, 09 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/milan/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Publications</title>
-      <link>/tags/publications/</link>
-      <pubDate>Tue, 09 Jul 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/publications/</guid>
       <description></description>
     </item>
     
