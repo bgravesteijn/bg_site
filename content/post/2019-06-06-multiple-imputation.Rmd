@@ -1,0 +1,153 @@
+---
+title: Multiple imputation
+author: Benjamin Gravesteijn
+date: '2019-06-06'
+slug: multiple-imputation
+categories:
+  - Tutorial
+tags:
+  - Statistics
+---
+_This is the tutorial for the paper "Missing data in TBI research: A five step approach for multiple imputation"._ 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+library(ordinal)
+library(nnet)
+library(data.table)
+library(devtools)
+library(mice)
+library(rms)
+
+#install_github("bgravesteijn/bgravesteijn") #only the first time
+
+load("Images/preppeddata.RData")
+
+dti <- dt[,.(InjuryHx.PupilResponseIMPACT, InjuryHx.HighestPreHospEDMotorGCS,Subject.Age, InjuryHx.TotalISS, gose, Subject.SiteCode)]
+
+colnames(dti) <- c("Pupils", "mGCS", "Age", "ISS", "GOSE","Site")
+
+```
+
+# Step 1 - Exploration
+##For the quantity and patterns of missingness
+
+```{r}
+VIM::aggr(dti)
+```
+
+### For the correlation between variables
+
+```{r}
+corr <- cor(sapply(dti, as.numeric), use = "pairwise.complete.obs", method = "spearman")
+corrplot::corrplot(corr, type = "lower")
+```
+
+### For overall distributions and % missingess
+
+```{r}
+# The first time:
+# library(devtools)
+# install_github("bgravesteijn/bgravesteijn")
+bgravesteijn::distr.na(dti)
+```
+
+## To test MAR
+
+```{r}
+summary(glm(I(is.na(Pupils))~mGCS+Age+ISS+GOSE, data=dti, family="binomial"))
+summary(glm(I(is.na(mGCS))~Pupils+Age+ISS+GOSE, data=dti, family="binomial"))
+summary(glm(I(is.na(ISS))~mGCS+Age+Pupils+GOSE, data=dti, family="binomial"))
+summary(glm(I(is.na(GOSE))~mGCS+Age+ISS+Pupils, data=dti, family="binomial"))
+```
+
+# Step 3 - Imputation
+
+## Multiple - single level
+```{r Multiple - single level, eval=FALSE}
+library(mice)
+
+miceimp <- dti
+
+miceimp0 <- mice(miceimp, maxit=0)
+
+meth <- miceimp0$method
+pred <- miceimp0$predictorMatrix
+
+meth[which(meth=="pmm")] <- "midastouch" #the improved version of PMM, of the miceadds package
+
+pred[, "Site"] <- 0 #don't use sitecode to impute
+
+miceimp <- mice(data = miceimp, method = meth, predictorMatrix = pred, m=5, printFlag = FALSE, set.seed=1234)
+```
+
+## Multiple - multilevel
+```{r Multiple - multilevel, eval=FALSE}
+library(jomo)
+
+jomoimp <- dti
+
+jomoimp$GOSE <- factor(jomoimp$GOSE, ordered=TRUE)
+
+# specify the level of each variable
+lvl <- c(GOSE=1, 
+         Pupils = 1, 
+         mGCS = 1, 
+         Age = 1, 
+         ISS = 1, 
+         Site = 2)
+
+jomoimp <- data.frame(jomoimp) #so the subsetting within the function works
+
+fml <- as.formula("GOSE~Pupils+mGCS+Age+ISS+(1|Site)")
+
+jomo.chain <- jomo.clmm.MCMCchain(fml,data = jomoimp[,names(lvl)], level=lvl)
+
+jomoimp <- jomo.clmm(fml,data = jomoimp[,names(lvl)], level=lvl, nimp = 5)
+
+jomoimp.2 <- datalist2mids(split(jomoimp,
+                                 jomoimp$Imputation)[-1])
+```
+
+# Step 4 - Diagnostics
+```{r include=FALSE}
+load("Images/imputed_data.RData")
+
+meanimp <- imp[[1]]
+singimp <- imp[[2]]
+miceimp <- imp[[3]]
+jomo.chain <- imp[[4]]
+jomoimp.2 <- imp[[6]]
+```
+
+
+```{r echo=TRUE}
+print("MICE")
+plot(miceimp)
+bgravesteijn::distr.na(complete(miceimp,1))
+densityplot(miceimp)
+
+print("JOMO")
+par(mfcol = c(2, 3), mar = c(3, 2.5, 0.5, 0.5), mgp = c(2, 0.6, 0))
+apply(jomo.chain$collectbeta[1, ,], 1, plot, type = "l",
+      xlab = 'iteration', ylab = '')
+for (k in 1:dim(jomo.chain$collectomega)[1]) {
+  apply(jomo.chain$collectomega[k, , ], 1, plot, type = "l",
+        xlab = 'iteration', ylab = '')
+}
+apply(jomo.chain$collectbetaY[1, ,], 1, plot, type = "l",
+      xlab = 'iteration', ylab = '')
+plot(jomo.chain$collectvarY, type = 'l')
+bgravesteijn::distr.na(complete(jomoimp.2,1))
+densityplot(jomoimp.2)
+```
+
+# Step 5 - Fitting
+```{r}
+library(rms)
+fit2 <- fit.mult.impute(GOSE~mGCS+Age+Pupils, fitter=lrm, xtrans = miceimp, data=dti)
+fit2
+
+```
+
