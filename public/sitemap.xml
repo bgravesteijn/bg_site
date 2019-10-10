@@ -4,19 +4,48 @@
   
   <url>
     <loc>/tags/anesthesia/</loc>
-    <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/</loc>
-    <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/categories/</loc>
-    <lastmod>2019-09-12T00:00:00+00:00</lastmod>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/publications/</loc>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/research-highlight/</loc>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/2019/10/10/research-highlight-cost-effectiveness-of-ecpr/</loc>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -33,26 +62,8 @@
   </url>
   
   <url>
-    <loc>/post/</loc>
-    <lastmod>2019-09-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/publications/</loc>
-    <lastmod>2019-09-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/2019/09/12/tbi-beer-and-chocolates-in-leuven/</loc>
     <lastmod>2019-09-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
-    <lastmod>2019-09-12T00:00:00+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
