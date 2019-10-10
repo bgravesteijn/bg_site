@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.58.3" />
+
+
+<title>Multiple imputation - Benjamin Gravesteijn</title>
+<meta property="og:title" content="Multiple imputation - Benjamin Gravesteijn">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/img_site.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/bgravesteijn">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/BGravesteijn">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+
+    <h1 class="article-title">Multiple imputation</h1>
+
+    
+
+    <div class="article-content">
+      
+
+
+<p><em>This is the tutorial for the paper “Missing data in TBI research: A five step approach for multiple imputation”.</em></p>
+<div id="step-1---exploration" class="section level1">
+<h1>Step 1 - Exploration</h1>
+<div id="for-the-quantity-and-patterns-of-missingness" class="section level2">
+<h2>For the quantity and patterns of missingness</h2>
+<pre class="r"><code>VIM::aggr(dti)</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<div id="for-the-correlation-between-variables" class="section level3">
+<h3>For the correlation between variables</h3>
+<pre class="r"><code>corr &lt;- cor(sapply(dti, as.numeric), use = &quot;pairwise.complete.obs&quot;, method = &quot;spearman&quot;)
+corrplot::corrplot(corr, type = &quot;lower&quot;)</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="for-overall-distributions-and-missingess" class="section level3">
+<h3>For overall distributions and % missingess</h3>
+<pre class="r"><code># The first time:
+# library(devtools)
+# install_github(&quot;bgravesteijn/bgravesteijn&quot;)
+bgravesteijn::distr.na(dti)</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+</div>
+<div id="to-test-mar" class="section level2">
+<h2>To test MAR</h2>
+<pre class="r"><code>summary(glm(I(is.na(Pupils))~mGCS+Age+ISS+GOSE, data=dti, family=&quot;binomial&quot;))</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = I(is.na(Pupils)) ~ mGCS + Age + ISS + GOSE, family = &quot;binomial&quot;, 
+##     data = dti)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.3502  -0.2998  -0.2797  -0.2559   2.8021  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -3.284e+00  6.052e-01  -5.427 5.74e-08 ***
+## mGCS        -3.960e-03  7.834e-02  -0.051    0.960    
+## Age          6.136e-03  4.244e-03   1.446    0.148    
+## ISS         -1.085e-02  6.992e-03  -1.552    0.121    
+## GOSE         9.707e-07  5.064e-02   0.000    1.000    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1210.7  on 3698  degrees of freedom
+## Residual deviance: 1204.2  on 3694  degrees of freedom
+##   (823 observations deleted due to missingness)
+## AIC: 1214.2
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>summary(glm(I(is.na(mGCS))~Pupils+Age+ISS+GOSE, data=dti, family=&quot;binomial&quot;))</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = I(is.na(mGCS)) ~ Pupils + Age + ISS + GOSE, family = &quot;binomial&quot;, 
+##     data = dti)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.3886  -0.1504  -0.1199  -0.0959   3.3980  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept) -2.251663   0.919995  -2.447  0.01439 * 
+## Pupils1      0.236735   0.646505   0.366  0.71423   
+## Pupils2     -1.372729   0.787067  -1.744  0.08114 . 
+## Age         -0.016638   0.008650  -1.924  0.05440 . 
+## ISS          0.005061   0.011033   0.459  0.64644   
+## GOSE        -0.288974   0.093874  -3.078  0.00208 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 384.53  on 3589  degrees of freedom
+## Residual deviance: 368.39  on 3584  degrees of freedom
+##   (932 observations deleted due to missingness)
+## AIC: 380.39
+## 
+## Number of Fisher Scoring iterations: 8</code></pre>
+<pre class="r"><code>summary(glm(I(is.na(ISS))~mGCS+Age+Pupils+GOSE, data=dti, family=&quot;binomial&quot;))</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = I(is.na(ISS)) ~ mGCS + Age + Pupils + GOSE, family = &quot;binomial&quot;, 
+##     data = dti)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.1677  -0.1266  -0.1213  -0.1150   3.4560  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -5.295091   1.212123  -4.368 1.25e-05 ***
+## mGCS         0.146638   0.193995   0.756    0.450    
+## Age          0.002723   0.009820   0.277    0.782    
+## Pupils1      0.072399   1.065004   0.068    0.946    
+## Pupils2     -0.800449   1.107279  -0.723    0.470    
+## GOSE        -0.081076   0.107459  -0.754    0.451    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 307.94  on 3581  degrees of freedom
+## Residual deviance: 305.70  on 3576  degrees of freedom
+##   (940 observations deleted due to missingness)
+## AIC: 317.7
+## 
+## Number of Fisher Scoring iterations: 8</code></pre>
+<pre class="r"><code>summary(glm(I(is.na(GOSE))~mGCS+Age+ISS+Pupils, data=dti, family=&quot;binomial&quot;))</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = I(is.na(GOSE)) ~ mGCS + Age + ISS + Pupils, family = &quot;binomial&quot;, 
+##     data = dti)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.6931  -0.6144  -0.5683  -0.4778   2.3585  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -1.308427   0.278584  -4.697 2.64e-06 ***
+## mGCS         0.008975   0.041375   0.217 0.828279    
+## Age         -0.003581   0.002023  -1.771 0.076622 .  
+## ISS         -0.013434   0.003480  -3.860 0.000113 ***
+## Pupils1      0.048037   0.254093   0.189 0.850051    
+## Pupils2     -0.309961   0.212622  -1.458 0.144895    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 3580.2  on 4194  degrees of freedom
+## Residual deviance: 3543.4  on 4189  degrees of freedom
+##   (327 observations deleted due to missingness)
+## AIC: 3555.4
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<div id="step-3---imputation" class="section level1">
+<h1>Step 3 - Imputation</h1>
+<div id="multiple---single-level" class="section level2">
+<h2>Multiple - single level</h2>
+<pre class="r"><code>library(mice)
+
+miceimp &lt;- dti
+
+miceimp0 &lt;- mice(miceimp, maxit=0)
+
+meth &lt;- miceimp0$method
+pred &lt;- miceimp0$predictorMatrix
+
+meth[which(meth==&quot;pmm&quot;)] &lt;- &quot;midastouch&quot; #the improved version of PMM, of the miceadds package
+
+pred[, &quot;Site&quot;] &lt;- 0 #don&#39;t use sitecode to impute
+
+miceimp &lt;- mice(data = miceimp, method = meth, predictorMatrix = pred, m=5, printFlag = FALSE, set.seed=1234)</code></pre>
+</div>
+<div id="multiple---multilevel" class="section level2">
+<h2>Multiple - multilevel</h2>
+<pre class="r"><code>library(jomo)
+
+jomoimp &lt;- dti
+
+jomoimp$GOSE &lt;- factor(jomoimp$GOSE, ordered=TRUE)
+
+# specify the level of each variable
+lvl &lt;- c(GOSE=1, 
+         Pupils = 1, 
+         mGCS = 1, 
+         Age = 1, 
+         ISS = 1, 
+         Site = 2)
+
+jomoimp &lt;- data.frame(jomoimp) #so the subsetting within the function works
+
+fml &lt;- as.formula(&quot;GOSE~Pupils+mGCS+Age+ISS+(1|Site)&quot;)
+
+jomo.chain &lt;- jomo.clmm.MCMCchain(fml,data = jomoimp[,names(lvl)], level=lvl)
+
+jomoimp &lt;- jomo.clmm(fml,data = jomoimp[,names(lvl)], level=lvl, nimp = 5)
+
+jomoimp.2 &lt;- datalist2mids(split(jomoimp,
+                                 jomoimp$Imputation)[-1])</code></pre>
+</div>
+</div>
+<div id="step-4---diagnostics" class="section level1">
+<h1>Step 4 - Diagnostics</h1>
+<pre class="r"><code>print(&quot;MICE&quot;)</code></pre>
+<pre><code>## [1] &quot;MICE&quot;</code></pre>
+<pre class="r"><code>plot(miceimp)</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-1.png" width="672" /><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>bgravesteijn::distr.na(complete(miceimp,1))
+densityplot(miceimp)
+
+print(&quot;JOMO&quot;)</code></pre>
+<pre><code>## [1] &quot;JOMO&quot;</code></pre>
+<pre class="r"><code>par(mfcol = c(2, 3), mar = c(3, 2.5, 0.5, 0.5), mgp = c(2, 0.6, 0))</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
+<pre class="r"><code>apply(jomo.chain$collectbeta[1, ,], 1, plot, type = &quot;l&quot;,
+      xlab = &#39;iteration&#39;, ylab = &#39;&#39;)</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>for (k in 1:dim(jomo.chain$collectomega)[1]) {
+  apply(jomo.chain$collectomega[k, , ], 1, plot, type = &quot;l&quot;,
+        xlab = &#39;iteration&#39;, ylab = &#39;&#39;)
+}</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-4.png" width="672" /><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-5.png" width="672" /><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-6.png" width="672" /><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-7.png" width="672" /><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-8.png" width="672" /></p>
+<pre class="r"><code>apply(jomo.chain$collectbetaY[1, ,], 1, plot, type = &quot;l&quot;,
+      xlab = &#39;iteration&#39;, ylab = &#39;&#39;)</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-9.png" width="672" /></p>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>plot(jomo.chain$collectvarY, type = &#39;l&#39;)</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-10.png" width="672" /></p>
+<pre class="r"><code>bgravesteijn::distr.na(complete(jomoimp.2,1))
+densityplot(jomoimp.2)</code></pre>
+<p><img src="/post/2019-06-06-multiple-imputation_files/figure-html/unnamed-chunk-6-11.png" width="672" /></p>
+</div>
+<div id="step-5---fitting" class="section level1">
+<h1>Step 5 - Fitting</h1>
+<pre class="r"><code>library(rms)
+fit2 &lt;- fit.mult.impute(GOSE~mGCS+Age+Pupils, fitter=lrm, xtrans = miceimp, data=dti)</code></pre>
+<pre><code>## 
+## Variance Inflation Factors Due to Imputation:
+## 
+##     y&gt;=3     y&gt;=4     y&gt;=5     y&gt;=6     y&gt;=7     y&gt;=8     mGCS      Age 
+##     1.35     1.38     1.35     1.36     1.38     1.49     1.20     1.30 
+## Pupils=1 Pupils=2 
+##     1.10     1.19 
+## 
+## Rate of Missing Information:
+## 
+##     y&gt;=3     y&gt;=4     y&gt;=5     y&gt;=6     y&gt;=7     y&gt;=8     mGCS      Age 
+##     0.26     0.27     0.26     0.26     0.28     0.33     0.16     0.23 
+## Pupils=1 Pupils=2 
+##     0.09     0.16 
+## 
+## d.f. for t-distribution for Tests of Single Coefficients:
+## 
+##     y&gt;=3     y&gt;=4     y&gt;=5     y&gt;=6     y&gt;=7     y&gt;=8     mGCS      Age 
+##    58.86    53.56    60.35    57.13    52.56    37.41   150.10    73.84 
+## Pupils=1 Pupils=2 
+##   486.50   163.26 
+## 
+## The following fit components were averaged over the 5 model fits:
+## 
+##   stats linear.predictors</code></pre>
+<pre class="r"><code>fit2</code></pre>
+<pre><code>## Logistic Regression Model
+##  
+##  fit.mult.impute(formula = GOSE ~ mGCS + Age + Pupils, fitter = lrm, 
+##      xtrans = miceimp, data = dti)
+##  
+##  
+##  Frequencies of Responses
+##  
+##     2    3    4    5    6    7    8 
+##   521  292  192  272  464  745 2036 
+##  
+##                        Model Likelihood     Discrimination    Rank Discrim.    
+##                           Ratio Test           Indexes           Indexes       
+##  Obs          4522    LR chi2    1464.45    R2       0.288    C       0.703    
+##  max |deriv| 1e-09    d.f.             4    g        1.173    Dxy     0.406    
+##                       Pr(&gt; chi2) &lt;0.0001    gr       3.233    gamma   0.408    
+##                                             gp       0.194    tau-a   0.299    
+##                                             Brier    0.120                     
+##  
+##           Coef    S.E.   Wald Z Pr(&gt;|Z|)
+##  y&gt;=3      0.8848 0.1580   5.60 &lt;0.0001 
+##  y&gt;=4      0.1476 0.1575   0.94 0.3486  
+##  y&gt;=5     -0.2216 0.1559  -1.42 0.1552  
+##  y&gt;=6     -0.6654 0.1573  -4.23 &lt;0.0001 
+##  y&gt;=7     -1.2672 0.1602  -7.91 &lt;0.0001 
+##  y&gt;=8     -2.0792 0.1686 -12.33 &lt;0.0001 
+##  mGCS      0.5453 0.0247  22.05 &lt;0.0001 
+##  Age      -0.0209 0.0016 -13.05 &lt;0.0001 
+##  Pupils=1 -0.9522 0.1555  -6.13 &lt;0.0001 
+##  Pupils=2 -1.5360 0.1273 -12.07 &lt;0.0001 
+## </code></pre>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
